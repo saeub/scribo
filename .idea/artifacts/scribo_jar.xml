@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="scribo:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/scribo_jar</output-path>
+    <root id="archive" name="untitled.jar">
+      <element id="module-output" name="scribo" />
+      <element id="extracted-dir" path="$USER_HOME$/jnativehook/jar/jnativehook-2.1.0.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

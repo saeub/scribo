@@ -1,0 +1,225 @@
+##################
+# standard letters
+
+a + a = a
+b + b = b
+c + c = c
+d + d = d
+e + e = e
+f + f = f
+g + g = g
+h + h = h
+i + i = i
+j + j = j
+k + k = k
+l + l = l
+m + m = m
+n + n = n
+o + o = o
+p + p = p
+q + q = q
+r + r = r
+s + s = s
+t + t = t
+u + u = u
+v + v = v
+w + w = w
+x + x = x
+y + y = y
+z + z = z
+_ + _ = _
+
+#####
+# ipa
+
+a + q = ɑ	# open back unrounded
+a + y = ɐ	# open-mid schwa
+a + p = ɒ	# open back rounded
+a + e = æ	# raised open front unrounded
+
+b +   = ɓ	# vd bilabial implosive
+b + r = ʙ	# vd bilabial trill
+b + v = β	# vd bilabial fricative
+b + f = ɸ	# vl bilabial fricative
+
+c +   = ɕ	# vl alveolopalatal fricative
+c + x = ç	# vl palatal fricative
+
+d +   = ɗ	# vd alveolar implosive
+d + r = ɖ	# vd retroflex plosive
+d + h = ð	# vd dental fricative
+d + z = ʤ	# vd postalveolar affricate
+
+e + y = ə	# schwa
+e +   = ɘ	# close-mid schwa
+e +   = ɚ	# rhotacized schwa
+e + ä = ɛ	# open-mid front unrounded
+e + 3 = ɜ	# open-mid central
+e +   = ɝ	# rhotacized open-mid central
+e +   = ɞ	# open-mid central rounded
+
+  +   = ɟ	# vd palatal plosive
+  +   = ʄ	# vd palatal implosive
+
+g +   = ɡ	# vd velar plosive (but the IPA has ruled that an ordinary g is also acceptable)
+g +   = ɠ	# vd velar implosive
+g + G = ɢ	# vd uvular plosive
+g +   = ʛ	# vd uvular implosive
+
+h +   = ɦ	# vd glottal fricative
+h +   = ɧ	# vl multiple-place fricative
+h +   = ħ	# vl pharyngeal fricative
+h +   = ɥ	# labial-palatal approximant
+h + H = ʜ	# vl epiglottal fricative
+
+i +   = ɨ	# close central unrounded
+i + e = ɪ	# lax close front unrounded
+
+j +   = ʝ	# vd palatal fricative
+
+l + r = ɭ	# vd retroflex lateral
+l +   = ɬ	# vl alveolar lateral fricative
+l +   = ɫ	# velarized vd alveolar lateral
+l + z = ɮ	# vd alveolar lateral fricative
+l + L = ʟ	# vd velar lateral
+
+m + g = ɱ	# vd labiodental nasal
+
+  +   = ɯ	# close back unrounded
+  +   = ɰ	# velar approximant
+
+n + g = ŋ	# vd velar nasal
+n +   = ɳ	# vd retroflex nasal
+n +   = ɲ	# vd palatal nasal
+n + N = ɴ	# vd uvular nasal
+
+o + c = ɔ	# open-mid back rounded
+o + ö = ø	# front close-mid rounded
+o +   = ɵ	# rounded schwa
+
+o + e = œ	# front open-mid rounded
+o + E = ɶ	# front open rounded
+
+r + y = ɹ	# vd (post)alveolar approximant
+r +   = ɺ	# vd alveolar lateral flap
+r +   = ɾ	# vd alveolar tap
+r + 4 = ɻ	# vd retroflex approximant
+r + R = ʀ	# vd uvular trill
+r + Y = ʁ	# vd uvular fricative
+r +   = ɽ	# vd retroflex flap
+
+s + r = ʂ	# vl retroflex fricative
+s + h = ʃ	# vl postalveolar fricative
+
+t + r = ʈ	# vl retroflex plosive
+t + s = ʧ	# vl postalveolar affricate
+t + h = θ	# vl dental fricative
+
+u +   = ʉ	# close central rounded
+u + o = ʊ	# lax close back rounded
+
+v +   = ʋ	# vd labiodental approximant
+v +   = ⱱ	# voiced labiodental flap
+
+  +   = ʌ	# open-mid back unrounded
+
+g + x = ɣ	# vd velar fricative
+  +   = ɤ	# close-mid back unrounded
+
+  +   = ʍ	# vl labial-velar fricative
+
+x + X = χ	# vl uvular fricative
+
+l + y = ʎ	# vd palatal lateral
+
+y + Y = ʏ	# lax close front rounded
+
+z +   = ʑ	# vd alveolopalatal fricative
+z + r = ʐ	# vd retroflex fricative
+z + h = ʒ	# vd postalveolar fricative
+
+  +   = ʔ	# glottal plosive
+  +   = ʡ	# vd epiglottal plosive
+  +   = ʕ	# vd pharyngeal fricative
+  +   = ʢ	# vd epiglottal fricative
+
+C + p = ʘ	# bilabial click
+C + z = ǀ	# dental click
+C + l = ǁ	# alveolar lateral click
+C + t = ǂ	# alveolar click
+C + r = ǃ	# retroflex click
+
+p + ' = p’  # bilabial ejective
+t + ' = t’  # dental/alveolar ejective
+k + ' = k’  # velar ejective
+s + ' = s’  # alveolar ejective fricative
+
+################
+# indo-european:
+
+p + H = pʰ
+b + H = bʰ
+t + H = tʰ
+d + H = dʰ
+k + H = kʰ
+g + H = gʰ
+
+p + J = pʲ
+b + J = bʲ
+t + J = tʲ
+d + J = dʲ
+k + J = kʲ
+g + J = gʲ
+
+k + W = kʷ
+g + W = gʷ
+
+k + ^ = k̑
+g + ^ = g̑
+
+h + 1 = h₁
+h + 2 = h₂
+h + 3 = h₃
+
+u + U = u̯
+i + U = i̯
+
+#############
+# diacritics:
+
+_ + ^ = ̑   # palatalized (idg)
+_ + - = ̄   # macron
+
+_ + ' = ’  # ejective
+
+_ + o = ̥   # unvoiced
+_ + v = ̬   # voiced
+_ + H = ʰ  # aspirated
+_ + ) = ̹   # more rounded
+_ + ( = ̜   # less rounded
+_ +   = ̟   # advanced
+_ +   = ̱   # retracted
+_ +   = ̈   # centralized
+_ +   = ̽   # mid-centralized
+_ + . = ̣   # syllabic
+_ + U = ̯   # non-syllabic
+_ +   = ˞  # rhoticity
+_ +   = ̤   # breathy voice
+_ +   = ̰   # creaky voice
+_ +   = ̼   # linguilabial
+_ + W = ʷ  # labial
+_ + J = ʲ  # palatalized
+_ + G = ˠ  # velarized
+_ +   = ˤ  # pharyngealized
+_ +   = ̴  # velarized or pharyngealized
+_ +   = ̝   # raised
+_ +   = ̞   # lowered
+_ +   = ̘   # advanced tongue root
+_ +   = ̙   # retracted tongue root
+_ +   = ̪   # dental
+_ +   = ̺   # apical
+_ +   = ̻   # laminal
+_ + ~ = ̃   # nasalized
+_ +   = ⁿ  # nasal release
+_ +   = ˡ  # lateral release
+_ +   = ̚  # no audible release
