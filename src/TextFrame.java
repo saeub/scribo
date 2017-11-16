@@ -111,7 +111,7 @@ public class TextFrame extends JFrame implements WindowFocusListener, KeyListene
 
     public void chooseCharacter(char classKey) {
         selecting = true;
-        addString(String.valueOf(classKey), false, true);
+        addString(Settings.getScript().getKeyString(classKey), false, true);
         new SelectionDialog(this, classKey);
     }
 

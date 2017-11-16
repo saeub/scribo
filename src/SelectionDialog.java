@@ -13,7 +13,7 @@ public class SelectionDialog extends JDialog implements KeyListener {
         this.parent = parent;
         this.characterClass = Settings.getScript().getCharacterClass(classKey);
         if (characterClass == null) {
-            parent.onSelection(Character.toString(classKey), null);
+            parent.onSelection(Settings.getScript().getKeyString(classKey), null);
         } else {
             Character[] keyCharacters = characterClass.getKeyCharacters();
             setLayout(new GridLayout(2, keyCharacters.length));
@@ -42,7 +42,7 @@ public class SelectionDialog extends JDialog implements KeyListener {
         String characterString = characterClass.getCharacterString(keyChar);
         if (characterString != null) {
             parent.onSelection(characterString, null);
-        } else if (keyChar == KeyEvent.VK_ENTER || keyChar == KeyEvent.VK_ESCAPE) {
+        } else if (keyChar == KeyEvent.VK_ENTER || keyChar == KeyEvent.VK_ESCAPE || keyChar == KeyEvent.VK_BACK_SPACE) {
             parent.onSelection(null, null);
         } else {
             parent.onSelection(null, keyChar);
@@ -64,7 +64,6 @@ public class SelectionDialog extends JDialog implements KeyListener {
         private SelectionCharacterLabel(String characterString) {
             super();
             setText(characterString);
-            //setFont(new Font(Font.SERIF, Font.PLAIN, 20));
             setFont(Settings.getScriptFont());
             setHorizontalAlignment(JLabel.CENTER);
         }
@@ -76,7 +75,6 @@ public class SelectionDialog extends JDialog implements KeyListener {
         private SelectionKeyLabel(char keyCharacter) {
             super();
             setText(Character.toString(keyCharacter));
-            //setFont(new Font(Font.MONOSPACED, Font.BOLD, 15));
             setFont(Settings.getKeyFont());
             setForeground(new Color(0x666666));
             setHorizontalAlignment(JLabel.CENTER);

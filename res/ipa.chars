@@ -1,33 +1,9 @@
-##################
-# standard letters
+####################
+# single key strings
 
-#a + a = a
-#b + b = b
-#c + c = c
-#d + d = d
-#e + e = e
-#f + f = f
-#g + g = g
-#h + h = h
-#i + i = i
-#j + j = j
-#k + k = k
-#l + l = l
-#m + m = m
-#n + n = n
-#o + o = o
-#p + p = p
-#q + q = q
-#r + r = r
-#s + s = s
-#t + t = t
-#u + u = u
-#v + v = v
-#w + w = w
-#x + x = x
-#y + y = y
-#z + z = z
-#_ + _ = _
+ü = y
+ö = ø
+ä = ɛ
 
 #####
 # ipa
@@ -138,7 +114,7 @@ z +   = ʑ	# vd alveolopalatal fricative
 z + r = ʐ	# vd retroflex fricative
 z + h = ʒ	# vd postalveolar fricative
 
-  +   = ʔ	# glottal plosive
+? + ? = ʔ	# glottal plosive
   +   = ʡ	# vd epiglottal plosive
   +   = ʕ	# vd pharyngeal fricative
   +   = ʢ	# vd epiglottal fricative
@@ -187,39 +163,39 @@ i + U = i̯
 #############
 # diacritics:
 
-_ + ^ = ̑   # palatalized (idg)
-_ + - = ̄   # macron
+. + ^ = ̑   # palatalized (idg)
+. + - = ̄   # macron
 
-_ + ' = ’  # ejective
+. + ' = ’  # ejective
 
-_ + o = ̥   # unvoiced
-_ + v = ̬   # voiced
-_ + H = ʰ  # aspirated
-_ + ) = ̹   # more rounded
-_ + ( = ̜   # less rounded
-_ +   = ̟   # advanced
-_ +   = ̱   # retracted
-_ +   = ̈   # centralized
-_ +   = ̽   # mid-centralized
-_ + . = ̣   # syllabic
-_ + U = ̯   # non-syllabic
-_ +   = ˞  # rhoticity
-_ +   = ̤   # breathy voice
-_ +   = ̰   # creaky voice
-_ +   = ̼   # linguilabial
-_ + W = ʷ  # labial
-_ + J = ʲ  # palatalized
-_ + G = ˠ  # velarized
-_ +   = ˤ  # pharyngealized
-_ +   = ̴  # velarized or pharyngealized
-_ +   = ̝   # raised
-_ +   = ̞   # lowered
-_ +   = ̘   # advanced tongue root
-_ +   = ̙   # retracted tongue root
-_ +   = ̪   # dental
-_ +   = ̺   # apical
-_ +   = ̻   # laminal
-_ + ~ = ̃   # nasalized
-_ +   = ⁿ  # nasal release
-_ +   = ˡ  # lateral release
-_ +   = ̚  # no audible release
+. + o = ̥   # unvoiced
+. + v = ̬   # voiced
+. + H = ʰ  # aspirated
+. + ) = ̹   # more rounded
+. + ( = ̜   # less rounded
+. +   = ̟   # advanced
+. +   = ̱   # retracted
+. +   = ̈   # centralized
+. +   = ̽   # mid-centralized
+. + . = ̣   # syllabic
+. + U = ̯   # non-syllabic
+. +   = ˞  # rhoticity
+. +   = ̤   # breathy voice
+. +   = ̰   # creaky voice
+. +   = ̼   # linguilabial
+. + W = ʷ  # labial
+. + J = ʲ  # palatalized
+. + G = ˠ  # velarized
+. +   = ˤ  # pharyngealized
+. +   = ̴  # velarized or pharyngealized
+. +   = ̝   # raised
+. +   = ̞   # lowered
+. +   = ̘   # advanced tongue root
+. +   = ̙   # retracted tongue root
+. +   = ̪   # dental
+. +   = ̺   # apical
+. +   = ̻   # laminal
+. + ~ = ̃   # nasalized
+. +   = ⁿ  # nasal release
+. +   = ˡ  # lateral release
+. +   = ̚  # no audible release
