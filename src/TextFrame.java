@@ -20,6 +20,7 @@ public class TextFrame extends JFrame implements WindowFocusListener, KeyListene
     private JTextField textField;
     private boolean selecting;
     private boolean activationControlKeyPressed;
+    private int tempStart, tempEnd;
 
     public TextFrame() {
         super();
@@ -32,7 +33,7 @@ public class TextFrame extends JFrame implements WindowFocusListener, KeyListene
         textField.addKeyListener(this);
         textField.setHorizontalAlignment(JTextField.CENTER);
         textField.setMargin(new Insets(0, 5, 0, 5));
-        textField.setFont(new Font(Font.SERIF, Font.PLAIN, 20));
+        textField.setFont(Settings.getScriptFont());
         add(textField);
         resize();
         //setVisible(true);
@@ -57,23 +58,46 @@ public class TextFrame extends JFrame implements WindowFocusListener, KeyListene
         setLocationRelativeTo(null);
     }
 
-    public void onSelection(String characterString) {
+    public void onSelection(String characterString, Character nextCharacter) {
         selecting = false;
         if (characterString != null) {
-            StringBuilder text = new StringBuilder(textField.getText());
-            int caret = textField.getCaretPosition();
-            text.insert(caret, characterString);
-            caret += characterString.length();
-            textField.setText(text.toString());
-            textField.setCaretPosition(caret);
-            resize();
+            String text = addString(characterString, true, false);
             Toolkit.getDefaultToolkit().getSystemClipboard().setContents(
-                    new StringSelection(text.toString()), null);
+                    new StringSelection(text), null);
+        }
+        if (nextCharacter != null) {
+            chooseCharacter(nextCharacter);
         }
     }
 
-    private void removeChar(int index) {
+    private void moveCaret(int offset) {
+        int position = textField.getCaretPosition() + offset;
+        textField.setCaretPosition(position);
+    }
+
+    private String addString(String string, boolean replaceTemp, boolean newTemp) {
         StringBuilder text = new StringBuilder(textField.getText());
+        int caret = textField.getCaretPosition();
+        if (replaceTemp) {
+            text.delete(tempStart, tempEnd);
+            textField.setText(text.toString());
+            caret = tempStart;
+        }
+        if (newTemp) {
+            tempStart = caret;
+            tempEnd = caret + string.length();
+        }
+        text.insert(caret, string);
+        caret += string.length();
+        textField.setText(text.toString());
+        textField.setCaretPosition(caret);
+        resize();
+        return text.toString();
+    }
+
+    private String removeCharacter(int offset) {
+        StringBuilder text = new StringBuilder(textField.getText());
+        int index = textField.getCaretPosition() + offset;
         if (index >= 0 && index < text.length()) {
             text.deleteCharAt(index);
             textField.setText(text.toString());
@@ -82,10 +106,12 @@ public class TextFrame extends JFrame implements WindowFocusListener, KeyListene
             Toolkit.getDefaultToolkit().getSystemClipboard().setContents(
                     new StringSelection(text.toString()), null);
         }
+        return text.toString();
     }
 
-    public void chooseChar(char classKey) {
+    public void chooseCharacter(char classKey) {
         selecting = true;
+        addString(String.valueOf(classKey), false, true);
         new SelectionDialog(this, classKey);
     }
 
@@ -105,17 +131,16 @@ public class TextFrame extends JFrame implements WindowFocusListener, KeyListene
     public void keyTyped(KeyEvent e) {
         if (!selecting) {
             char keyChar = e.getKeyChar();
-            int caret = textField.getCaretPosition();
             if (keyChar == KeyEvent.VK_LEFT) {
-                textField.setCaretPosition(caret - 1);
+                moveCaret(-1);
             } else if (keyChar == KeyEvent.VK_RIGHT) {
-                textField.setCaretPosition(caret + 1);
+                moveCaret(1);
             } else if (keyChar == KeyEvent.VK_BACK_SPACE) {
-                removeChar(caret - 1);
+                removeCharacter(-1);
             } else if (keyChar == KeyEvent.VK_DELETE) {
-                removeChar(caret);
+                removeCharacter(0);
             } else {
-                chooseChar(keyChar);
+                chooseCharacter(keyChar);
             }
         }
     }

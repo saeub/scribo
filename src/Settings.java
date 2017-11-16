@@ -1,5 +1,6 @@
 import org.jnativehook.keyboard.NativeKeyEvent;
 
+import java.awt.*;
 import java.io.*;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
@@ -55,15 +56,25 @@ public class Settings {
     private static int activationControlKey;
     private static String activationKeyString;
     private static int activationKey;
+    private static Font scriptFont, keyFont;
 
     public static void load() {
         try {
             InputStreamReader reader = new InputStreamReader(new FileInputStream(FILE_NAME), "UTF-8");
             parse(reader);
             reader.close();
-        } catch (java.io.IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
+        /*try {
+            GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(Font.createFont(Font.TRUETYPE_FONT, new File("res/GentiumPlus-R.ttf")));
+            scriptFont = new Font("Gentium Plus", Font.BOLD, 20);
+        } catch (FontFormatException | IOException e) {
+            e.printStackTrace();
+            scriptFont = new Font(Font.SANS_SERIF, Font.PLAIN, 20);
+        }*/
+        scriptFont = new Font(Font.SERIF, Font.PLAIN, 20);
+        keyFont = new Font(Font.MONOSPACED, Font.BOLD, 15);
     }
 
     private static void parse(InputStreamReader reader) throws IOException {
@@ -192,6 +203,14 @@ public class Settings {
 
     public static String getActivationKeyString() {
         return activationKeyString;
+    }
+
+    public static Font getScriptFont() {
+        return scriptFont;
+    }
+
+    public static Font getKeyFont() {
+        return keyFont;
     }
 
 }

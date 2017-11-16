@@ -36,7 +36,7 @@ public class Script {
             if (readChar == '\n' || readInt == -1) {
                 if (classKey != null && charKey != null && charStringBuilder != null) {
                     if (!characterClasses.containsKey(classKey)) {
-                        characterClasses.put(classKey, new CharacterClass(new HashMap<>()));
+                        characterClasses.put(classKey, new CharacterClass(classKey, new HashMap<>()));
                     }
                     CharacterClass characterClass = characterClasses.get(classKey);
                     if (characterClass.containsKeyCharacter(charKey)) {

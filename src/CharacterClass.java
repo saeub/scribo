@@ -5,9 +5,11 @@ import java.util.HashMap;
 
 public class CharacterClass {
 
+    private char classKeyCharacter;
     private HashMap<Character, String> characters;
 
-    public CharacterClass(HashMap<Character, String> characters) {
+    public CharacterClass(char classKeyCharacter, HashMap<Character, String> characters) {
+        this.classKeyCharacter = classKeyCharacter;
         this.characters = characters;
     }
 
@@ -17,6 +19,10 @@ public class CharacterClass {
 
     public void putCharacter(Character keyCharacter, String characterString) {
         characters.put(keyCharacter, characterString);
+    }
+
+    public char getClassKeyCharacter() {
+        return classKeyCharacter;
     }
 
     public Character[] getKeyCharacters() {
