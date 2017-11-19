@@ -1,15 +1,18 @@
+import sun.awt.WindowClosingListener;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class SettingsFrame extends JFrame implements ActionListener {
+public class SettingsFrame extends JFrame implements WindowListener, ActionListener {
 
-    private JPanel panel;
-    private JPanel settingsPanel, buttonsPanel;
-    private JPanel keysPanel, scriptPanel;
+    private static SettingsFrame singleInstance;
+
     private JLabel keysLabel;
     private JComboBox<String> controlKeyCombo, keyCombo;
     private JLabel scriptLabel;
@@ -17,27 +20,8 @@ public class SettingsFrame extends JFrame implements ActionListener {
     private JButton scriptHelpButton;
     private JButton cancelButton, okButton;
 
-    public SettingsFrame() {
+    private SettingsFrame() {
         super("Settings");
-
-        panel = new JPanel();
-        panel.setLayout(new GridBagLayout());
-        add(panel);
-
-        settingsPanel = new JPanel();
-        GroupLayout settingsLayout = new GroupLayout(settingsPanel);
-        settingsPanel.setLayout(settingsLayout);
-        panel.add(settingsPanel);
-
-        buttonsPanel = new JPanel();
-        buttonsPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
-
-        panel.add(buttonsPanel, new GridBagConstraints(0, 1, 1, 1,
-                0, 0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
-                new Insets(0, 0, 0, 0), 0, 0));
-
-        keysPanel = new JPanel();
-        keysPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 
         keysLabel = new JLabel("Shortcut:");
 
@@ -47,7 +31,7 @@ public class SettingsFrame extends JFrame implements ActionListener {
         controlKeyStrings.forEach((keyString) -> controlKeyCombo.addItem(keyString));
         controlKeyCombo.setSelectedItem(Settings.getActivationControlKeyString());
         controlKeyCombo.addActionListener(this);
-        keysPanel.add(controlKeyCombo);
+        //keysPanel.add(controlKeyCombo);
 
         keyCombo = new JComboBox<>();
         ArrayList<String> keyStrings = new ArrayList<>(Settings.KEY_MAP.keySet());
@@ -55,42 +39,15 @@ public class SettingsFrame extends JFrame implements ActionListener {
         keyStrings.forEach((keyString) -> keyCombo.addItem(keyString));
         keyCombo.setSelectedItem(Settings.getActivationKeyString());
         keyCombo.addActionListener(this);
-        keysPanel.add(keyCombo);
-
-        scriptPanel = new JPanel();
-        scriptPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        //keysPanel.add(keyCombo);
 
         scriptLabel = new JLabel("Script:");
-        scriptPanel.add(scriptLabel);
 
         scriptCombo = new JComboBox<>(Settings.getAvailableScriptFileNames());
         scriptCombo.setSelectedItem(Settings.getScriptFileName());
-        scriptPanel.add(scriptCombo);
 
         scriptHelpButton = new JButton("What's this?");
         scriptHelpButton.setMargin(new Insets(2, 2, 2, 2));
-        scriptPanel.add(scriptHelpButton);
-
-        settingsLayout.setAutoCreateGaps(true);
-        settingsLayout.setAutoCreateContainerGaps(true);
-
-        GroupLayout.SequentialGroup hGroup = settingsLayout.createSequentialGroup();
-        hGroup.addGroup(settingsLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
-                .addComponent(keysLabel)
-                .addComponent(scriptLabel));
-        hGroup.addGroup(settingsLayout.createParallelGroup()
-                .addComponent(keysPanel)
-                .addComponent(scriptPanel));
-        settingsLayout.setHorizontalGroup(hGroup);
-
-        GroupLayout.SequentialGroup vGroup = settingsLayout.createSequentialGroup();
-        vGroup.addGroup(settingsLayout.createParallelGroup(GroupLayout.Alignment.CENTER)
-                .addComponent(keysLabel)
-                .addComponent(keysPanel));
-        vGroup.addGroup(settingsLayout.createParallelGroup(GroupLayout.Alignment.CENTER)
-                .addComponent(scriptLabel)
-                .addComponent(scriptPanel));
-        settingsLayout.setVerticalGroup(vGroup);
 
         cancelButton = new JButton("Cancel");
         cancelButton.addActionListener(this);
@@ -98,20 +55,84 @@ public class SettingsFrame extends JFrame implements ActionListener {
         okButton = new JButton("OK");
         okButton.addActionListener(this);
 
-        buttonsPanel.add(cancelButton);
-        buttonsPanel.add(okButton);
+        GroupLayout layout = new GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
 
-        setSize(panel.getPreferredSize());
+        layout.setAutoCreateGaps(true);
+        layout.setAutoCreateContainerGaps(true);
+
+        layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
+                    .addComponent(keysLabel)
+                    .addComponent(scriptLabel)
+                )
+                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(controlKeyCombo)
+                        .addComponent(keyCombo)
+                    )
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(scriptCombo)
+                        .addComponent(scriptHelpButton)
+                    )
+                )
+            )
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(cancelButton)
+                .addComponent(okButton)
+            )
+        );
+
+        layout.setVerticalGroup(layout.createSequentialGroup()
+            .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                .addComponent(keysLabel)
+                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                    .addComponent(controlKeyCombo)
+                    .addComponent(keyCombo)
+                )
+            )
+            .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+            .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                .addComponent(scriptLabel)
+                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                    .addComponent(scriptCombo)
+                    .addComponent(scriptHelpButton)
+                )
+            )
+            .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+            .addGroup(layout.createParallelGroup()
+                .addComponent(cancelButton)
+                .addComponent(okButton)
+            )
+        );
+
+        setSize(getPreferredSize());
         setResizable(false);
         setLocationRelativeTo(null);
+        addWindowListener(this);
         setVisible(true);
+    }
+
+    public static void open() {
+        if (singleInstance != null) {
+            close();
+        }
+        singleInstance = new SettingsFrame();
+    }
+
+    public static void close() {
+        if (singleInstance != null) {
+            singleInstance.dispose();
+            singleInstance = null;
+        }
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         Object source = e.getSource();
         if (source == cancelButton) {
-            dispose();
+            close();
         } else if (source == okButton) {
             Settings.setActivationKeys((String) controlKeyCombo.getSelectedItem(), (String) keyCombo.getSelectedItem());
             String scriptFileName = (String) scriptCombo.getSelectedItem();
@@ -119,8 +140,31 @@ public class SettingsFrame extends JFrame implements ActionListener {
                 Settings.setScript(scriptFileName);
             }
             Settings.save();
-            dispose();
+            close();
         }
     }
+
+    @Override
+    public void windowOpened(WindowEvent e) { }
+
+    @Override
+    public void windowClosing(WindowEvent e) {
+        close();
+    }
+
+    @Override
+    public void windowClosed(WindowEvent e) { }
+
+    @Override
+    public void windowIconified(WindowEvent e) { }
+
+    @Override
+    public void windowDeiconified(WindowEvent e) { }
+
+    @Override
+    public void windowActivated(WindowEvent e) { }
+
+    @Override
+    public void windowDeactivated(WindowEvent e) { }
 
 }

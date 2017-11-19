@@ -14,6 +14,7 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.text.Normalizer;
 
 public class TextFrame extends JFrame implements WindowFocusListener, KeyListener, NativeKeyListener, ClipboardOwner {
 
@@ -38,9 +39,9 @@ public class TextFrame extends JFrame implements WindowFocusListener, KeyListene
         resize();
         //setVisible(true);
         try {
-            TrayIcon icon = new TrayIcon(ImageIO.read(new FileInputStream("res/trayicon.png")));
+            TrayIcon icon = new TrayIcon(ImageIO.read(new FileInputStream(Settings.RES_PATH + "trayicon.png")));
             icon.setImageAutoSize(true);
-            icon.addActionListener(e -> new SettingsFrame());
+            icon.addActionListener(e -> SettingsFrame.open());
             PopupMenu menu = new PopupMenu();
             MenuItem quitItem = new MenuItem("Quit");
             quitItem.addActionListener(e -> Main.exit());
@@ -88,7 +89,13 @@ public class TextFrame extends JFrame implements WindowFocusListener, KeyListene
             tempEnd = caret + string.length();
         }
         text.insert(caret, string);
-        caret += string.length();
+        if (Settings.getScript().requiresNormalization() && replaceTemp) { // TODO optimize
+            String normalizedText = Normalizer.normalize(text.toString(), Normalizer.Form.NFC);
+            caret += string.length() + normalizedText.length() - text.length();
+            text = new StringBuilder(normalizedText);
+        } else {
+            caret += string.length();
+        }
         textField.setText(text.toString());
         textField.setCaretPosition(caret);
         resize();

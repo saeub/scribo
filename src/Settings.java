@@ -2,6 +2,7 @@ import org.jnativehook.keyboard.NativeKeyEvent;
 
 import java.awt.*;
 import java.io.*;
+import java.net.URISyntaxException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -14,7 +15,24 @@ public class Settings {
     public static final HashMap<String, Integer> CONTROL_KEY_MAP;
     public static final HashMap<String, Integer> KEY_MAP;
 
-    private static final String FILE_NAME = "res/.settings";
+    public static final String RES_PATH;
+    static {
+        if (Main.debug) {
+            RES_PATH = "res/";
+        } else {
+            String path;
+            try {
+                File baseFile = new File(Settings.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+                path = baseFile.getParent() + "/res/";
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+                path = "res/";
+            }
+            RES_PATH = path;
+        }
+    }
+
+    private static final String FILE_NAME = RES_PATH + ".settings";
     private static final String SCRIPT_KEY = "script";
     private static final String ACTIVATION_CONTROL_KEY_KEY = "activationControlKey";
     private static final String ACTIVATION_KEY_KEY = "activationKey";
@@ -66,17 +84,19 @@ public class Settings {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        /*try {
-            GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(Font.createFont(Font.TRUETYPE_FONT, new File("res/GentiumPlus-R.ttf")));
+        try {
+            GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(Font.createFont(Font.TRUETYPE_FONT,
+                    new File(RES_PATH + "GentiumPlus-R.ttf")));
             scriptFont = new Font("Gentium Plus", Font.BOLD, 20);
         } catch (FontFormatException | IOException e) {
             e.printStackTrace();
             scriptFont = new Font(Font.SANS_SERIF, Font.PLAIN, 20);
-        }*/
+        }
         scriptFont = new Font(Font.SERIF, Font.PLAIN, 20);
         keyFont = new Font(Font.MONOSPACED, Font.BOLD, 15);
     }
 
+    // TODO delegate to SettingsParser class
     private static void parse(InputStreamReader reader) throws IOException {
         final int KEY = 0;
         final int VALUE = 1;
@@ -90,15 +110,12 @@ public class Settings {
                 if (keyStringBuilder != null && valueStringBuilder != null) {
                     String keyString = keyStringBuilder.toString();
                     String valueString = valueStringBuilder.toString();
-                    if (keyString.equals(SCRIPT_KEY)) {
-                        // script parsed
+                    if (keyString.equals(SCRIPT_KEY)) { // script parsed
                         setScript(valueString);
-                    } else if (keyString.equals(ACTIVATION_CONTROL_KEY_KEY)) {
-                        // activation control key parsed
+                    } else if (keyString.equals(ACTIVATION_CONTROL_KEY_KEY)) { // activation control key parsed
                         activationControlKeyString = valueString;
                         activationControlKey = CONTROL_KEY_MAP.get(activationControlKeyString);
-                    } else if (keyString.equals(ACTIVATION_KEY_KEY)) {
-                        // activation control key parsed
+                    } else if (keyString.equals(ACTIVATION_KEY_KEY)) { // activation control key parsed
                         activationKeyString = valueString;
                         activationKey = KEY_MAP.get(activationKeyString);
                     } else {
@@ -163,12 +180,17 @@ public class Settings {
 
     public static void setScript(String fileName) {
         scriptFileName = fileName;
-        script = new Script(fileName);
+        ScriptParser parser = new ScriptParser(scriptFileName);
+        try {
+            script = parser.parse();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public static String[] getAvailableScriptFileNames() {
         ArrayList<String> fileNames = new ArrayList<>();
-        try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get("res"))) {
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(Settings.RES_PATH))) {
             for (Path entry: stream) {
                 String fileName = entry.getFileName().toString();
                 if (fileName.endsWith(".chars")) {

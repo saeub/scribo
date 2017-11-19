@@ -1,0 +1,10 @@
+<component name="ArtifactManager">
+  <artifact name="res">
+    <output-path>$PROJECT_DIR$/out/artifacts/scribo_jar</output-path>
+    <root id="root">
+      <element id="directory" name="res">
+        <element id="dir-copy" path="$PROJECT_DIR$/res" />
+      </element>
+    </root>
+  </artifact>
+</component>
