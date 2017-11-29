@@ -14,11 +14,11 @@ a + p = ɒ	# open back rounded
 a + e = æ	# raised open front unrounded
 
 b +   = ɓ	# vd bilabial implosive
-b + r = ʙ	# vd bilabial trill
+b + B = ʙ	# vd bilabial trill
 b + v = β	# vd bilabial fricative
 b + f = ɸ	# vl bilabial fricative
 
-c +   = ɕ	# vl alveolopalatal fricative
+c + j = ɕ	# vl alveolopalatal fricative
 c + x = ç	# vl palatal fricative
 
 d +   = ɗ	# vd alveolar implosive
@@ -44,18 +44,18 @@ g +   = ʛ	# vd uvular implosive
 
 h +   = ɦ	# vd glottal fricative
 h +   = ɧ	# vl multiple-place fricative
-h +   = ħ	# vl pharyngeal fricative
-h +   = ɥ	# labial-palatal approximant
+h + h = ħ	# vl pharyngeal fricative
+h + y = ɥ	# labial-palatal approximant
 h + H = ʜ	# vl epiglottal fricative
 
-i +   = ɨ	# close central unrounded
+i + - = ɨ	# close central unrounded
 i + e = ɪ	# lax close front unrounded
 
-j +   = ʝ	# vd palatal fricative
+j + j = ʝ	# vd palatal fricative
 
 l + r = ɭ	# vd retroflex lateral
-l +   = ɬ	# vl alveolar lateral fricative
-l +   = ɫ	# velarized vd alveolar lateral
+l + j = ɬ	# vl alveolar lateral fricative
+l + - = ɫ	# velarized vd alveolar lateral
 l + z = ɮ	# vd alveolar lateral fricative
 l + L = ʟ	# vd velar lateral
 
@@ -71,7 +71,7 @@ n + N = ɴ	# vd uvular nasal
 
 o + c = ɔ	# open-mid back rounded
 o + ö = ø	# front close-mid rounded
-o +   = ɵ	# rounded schwa
+  +   = ɵ	# rounded schwa
 
 o + e = œ	# front open-mid rounded
 o + E = ɶ	# front open rounded
@@ -102,7 +102,7 @@ v +   = ⱱ	# voiced labiodental flap
 g + x = ɣ	# vd velar fricative
   +   = ɤ	# close-mid back unrounded
 
-  +   = ʍ	# vl labial-velar fricative
+w + y = ʍ	# vl labial-velar fricative
 
 x + X = χ	# vl uvular fricative
 
@@ -110,14 +110,15 @@ l + y = ʎ	# vd palatal lateral
 
 y + Y = ʏ	# lax close front rounded
 
-z +   = ʑ	# vd alveolopalatal fricative
+z + j = ʑ	# vd alveolopalatal fricative
 z + r = ʐ	# vd retroflex fricative
 z + h = ʒ	# vd postalveolar fricative
 
-? + ? = ʔ	# glottal plosive
-  +   = ʡ	# vd epiglottal plosive
-  +   = ʕ	# vd pharyngeal fricative
-  +   = ʢ	# vd epiglottal fricative
+? = ʔ	# glottal plosive
+? + ? = ?
+? + - = ʡ	# vd epiglottal plosive
+? +   = ʕ	# vd pharyngeal fricative
+? +   = ʢ	# vd epiglottal fricative
 
 C + p = ʘ	# bilabial click
 C + z = ǀ	# dental click
@@ -163,7 +164,7 @@ i + U = i̯
 #############
 # diacritics:
 
-. + ^ = ̑   # palatalized (idg)
+. + ^ = ̑   # palatalized
 . + - = ̄   # macron
 
 . + ' = ’  # ejective
@@ -196,6 +197,6 @@ i + U = i̯
 . +   = ̺   # apical
 . +   = ̻   # laminal
 . + ~ = ̃   # nasalized
-. +   = ⁿ  # nasal release
-. +   = ˡ  # lateral release
+. + N = ⁿ  # nasal release
+. + L = ˡ  # lateral release
 . +   = ̚  # no audible release

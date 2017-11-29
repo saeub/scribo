@@ -11,9 +11,9 @@ public class SelectionDialog extends JDialog implements KeyListener {
     public SelectionDialog(TextFrame parent, char classKey) {
         super(parent, true);
         this.parent = parent;
-        this.characterClass = Settings.getScript().getCharacterClass(classKey);
+        this.characterClass = Settings.getActiveScript().getCharacterClass(classKey);
         if (characterClass == null) {
-            parent.onSelection(Settings.getScript().getKeyString(classKey), null);
+            parent.onSelection(Settings.getActiveScript().getKeyString(classKey), null);
         } else {
             Character[] keyCharacters = characterClass.getKeyCharacters();
             setLayout(new GridLayout(2, keyCharacters.length));
@@ -40,13 +40,7 @@ public class SelectionDialog extends JDialog implements KeyListener {
         dispose();
         char keyChar = e.getKeyChar();
         String characterString = characterClass.getCharacterString(keyChar);
-        if (characterString != null) {
-            parent.onSelection(characterString, null);
-        } else if (keyChar == KeyEvent.VK_ENTER || keyChar == KeyEvent.VK_ESCAPE || keyChar == KeyEvent.VK_BACK_SPACE) {
-            parent.onSelection(null, null);
-        } else {
-            parent.onSelection(null, keyChar);
-        }
+        parent.onSelection(characterString, characterString != null ? null : keyChar);
     }
 
     @Override
@@ -64,7 +58,7 @@ public class SelectionDialog extends JDialog implements KeyListener {
         private SelectionCharacterLabel(String characterString) {
             super();
             setText(characterString);
-            setFont(Settings.getScriptFont());
+            setFont(Settings.getActiveScriptFont());
             setHorizontalAlignment(JLabel.CENTER);
         }
 
@@ -75,7 +69,7 @@ public class SelectionDialog extends JDialog implements KeyListener {
         private SelectionKeyLabel(char keyCharacter) {
             super();
             setText(Character.toString(keyCharacter));
-            setFont(Settings.getKeyFont());
+            setFont(Settings.getActiveKeyFont());
             setForeground(new Color(0x666666));
             setHorizontalAlignment(JLabel.CENTER);
         }

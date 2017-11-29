@@ -22,7 +22,7 @@ public class Main {
         try {
             RandomAccessFile lockFile = new RandomAccessFile(Settings.RES_PATH + ".lock", "rw");
             if (lockFile.getChannel().tryLock() == null) {
-                System.out.println("Another instance of scribo is already running. Quitting...");
+                System.out.println("scribo is already running");
                 System.exit(0);
             }
         } catch (java.io.IOException e) {

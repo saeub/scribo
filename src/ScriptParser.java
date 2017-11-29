@@ -97,6 +97,7 @@ public class ScriptParser {
                     mode = CHAR_KEY;
                 } else {
                     mode = COMMENT;
+                    System.out.println("(ScriptParser) WARNING: unexpected '+'");
                 }
                 break;
             case '=':
@@ -104,6 +105,7 @@ public class ScriptParser {
                     mode = CHAR;
                 } else {
                     mode = COMMENT;
+                    System.out.println("(ScriptParser) WARNING: unexpected '='");
                 }
                 break;
             default:
@@ -112,14 +114,14 @@ public class ScriptParser {
                         classKey = readChar == '_' ? ' ' : readChar;
                     } else {
                         mode = COMMENT;
-                        // ERROR: multiple class key characters
+                        System.out.println("(ScriptParser) WARNING: more than one class key character");
                     }
                 } else if (mode == CHAR_KEY) {
                     if (charKey == null) {
                         charKey = readChar == '_' ? ' ' : readChar;
                     } else {
                         mode = COMMENT;
-                        // ERROR: multiple character key characters
+                        System.out.println("(ScriptParser) WARNING: more than one character key character");
                     }
                 } else if (mode == CHAR) {
                     if (charStringBuilder == null) {
@@ -128,6 +130,7 @@ public class ScriptParser {
                     charStringBuilder.append(readChar == '_' ? ' ' : readChar);
                 } else {
                     mode = COMMENT;
+                    System.out.println("(ScriptParser) WARNING: this code shouldn't even be reachable...");
                 }
                 break;
         }

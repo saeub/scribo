@@ -14,29 +14,6 @@ public class Settings {
 
     public static final HashMap<String, Integer> CONTROL_KEY_MAP;
     public static final HashMap<String, Integer> KEY_MAP;
-
-    public static final String RES_PATH;
-    static {
-        if (Main.debug) {
-            RES_PATH = "res/";
-        } else {
-            String path;
-            try {
-                File baseFile = new File(Settings.class.getProtectionDomain().getCodeSource().getLocation().toURI());
-                path = baseFile.getParent() + "/res/";
-            } catch (URISyntaxException e) {
-                e.printStackTrace();
-                path = "res/";
-            }
-            RES_PATH = path;
-        }
-    }
-
-    private static final String FILE_NAME = RES_PATH + ".settings";
-    private static final String SCRIPT_KEY = "script";
-    private static final String ACTIVATION_CONTROL_KEY_KEY = "activationControlKey";
-    private static final String ACTIVATION_KEY_KEY = "activationKey";
-
     static {
         CONTROL_KEY_MAP = new HashMap<>();
         CONTROL_KEY_MAP.put("Ctrl", NativeKeyEvent.VC_CONTROL);
@@ -68,22 +45,41 @@ public class Settings {
         KEY_MAP.put("F12", NativeKeyEvent.VC_F12);
     }
 
-    private static String scriptFileName;
-    private static Script script;
-    private static String activationControlKeyString;
-    private static int activationControlKey;
-    private static String activationKeyString;
-    private static int activationKey;
-    private static Font scriptFont, keyFont;
-
-    public static void load() {
-        try {
-            InputStreamReader reader = new InputStreamReader(new FileInputStream(FILE_NAME), "UTF-8");
-            parse(reader);
-            reader.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+    public static final String RES_PATH;
+    static {
+        if (Main.debug) {
+            RES_PATH = "res/";
+        } else {
+            String path;
+            try {
+                // directory containing JAR
+                File baseFile = new File(Settings.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+                path = baseFile.getParent() + "/res/";
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+                // use working directory (equals directory containing JAR in most cases)
+                path = "res/";
+            }
+            RES_PATH = path;
         }
+    }
+
+    private static final String FILE_NAME = RES_PATH + ".settings";
+
+    private static Settings activeSettings;
+
+    private String scriptFileName;
+    private Script script;
+    private String activationControlKeyString;
+    private int activationControlKey;
+    private String activationKeyString;
+    private int activationKey;
+    private Font scriptFont, keyFont;
+
+    public Settings(String scriptFileName, String activationControlKeyString, String activationKeyString) {
+        setScript(scriptFileName);
+        setActivationControlKey(activationControlKeyString);
+        setActivationKey(activationKeyString);
         try {
             GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(Font.createFont(Font.TRUETYPE_FONT,
                     new File(RES_PATH + "GentiumPlus-R.ttf")));
@@ -96,89 +92,43 @@ public class Settings {
         keyFont = new Font(Font.MONOSPACED, Font.BOLD, 15);
     }
 
-    // TODO delegate to SettingsParser class
-    private static void parse(InputStreamReader reader) throws IOException {
-        final int KEY = 0;
-        final int VALUE = 1;
-        int mode = KEY;
-        StringBuilder keyStringBuilder = null;
-        StringBuilder valueStringBuilder = null;
-        while (true) {
-            int readInt = reader.read();
-            char readChar = (char) readInt;
-            if (readChar == '\n' || readInt == -1) {
-                if (keyStringBuilder != null && valueStringBuilder != null) {
-                    String keyString = keyStringBuilder.toString();
-                    String valueString = valueStringBuilder.toString();
-                    if (keyString.equals(SCRIPT_KEY)) { // script parsed
-                        setScript(valueString);
-                    } else if (keyString.equals(ACTIVATION_CONTROL_KEY_KEY)) { // activation control key parsed
-                        activationControlKeyString = valueString;
-                        activationControlKey = CONTROL_KEY_MAP.get(activationControlKeyString);
-                    } else if (keyString.equals(ACTIVATION_KEY_KEY)) { // activation control key parsed
-                        activationKeyString = valueString;
-                        activationKey = KEY_MAP.get(activationKeyString);
-                    } else {
-                        // ERROR: unknown key
-                    }
-                    mode = KEY;
-                } else {
-                    // ERROR: incomplete definition
-                }
-                keyStringBuilder = null;
-                valueStringBuilder = null;
-                if (readInt == -1) {
-                    break;
-                }
-            } else if (!Character.isWhitespace(readChar)) {
-                switch (readChar) {
-                    case '=':
-                        if (mode == KEY) {
-                            mode = VALUE;
-                        } else {
-                            // ERROR: multiple equal signs
-                        }
-                        break;
-                    default:
-                        if (mode == KEY) {
-                            if (keyStringBuilder == null) {
-                                keyStringBuilder = new StringBuilder();
-                            }
-                            keyStringBuilder.append(readChar);
-                        } else if (mode == VALUE) {
-                            if (valueStringBuilder == null) {
-                                valueStringBuilder = new StringBuilder();
-                            }
-                            valueStringBuilder.append(readChar);
-                        }
-                        break;
-                }
-            }
-        }
-    }
-
-    public static void save() {
+    public static void load() {
         try {
-            OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(FILE_NAME));
-            writer.write(
-                    SCRIPT_KEY              + " = " + scriptFileName + "\n" +
-                    ACTIVATION_CONTROL_KEY_KEY  + " = " + activationControlKeyString + "\n" +
-                    ACTIVATION_KEY_KEY          + " = " + activationKeyString
-            );
-            writer.close();
+            SettingsParser parser = new SettingsParser(FILE_NAME);
+            activeSettings = parser.parse();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public static void setActivationKeys(String controlKeyString, String keyString) {
-        activationControlKeyString = controlKeyString;
-        activationControlKey = CONTROL_KEY_MAP.get(controlKeyString);
+    public static void save() {
+        try {
+            SettingsParser parser = new SettingsParser(FILE_NAME);
+            parser.save(activeSettings);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void setActivationControlKey(String keyString) {
+        activationControlKeyString = keyString;
+        activationControlKey = CONTROL_KEY_MAP.get(keyString);
+    }
+
+    public static void setActiveActivationControlKey(String keyString) {
+        activeSettings.setActivationControlKey(keyString);
+    }
+
+    private void setActivationKey(String keyString) {
         activationKeyString = keyString;
         activationKey = KEY_MAP.get(keyString);
     }
 
-    public static void setScript(String fileName) {
+    public static void setActiveActivationKey(String keyString) {
+        activeSettings.setActivationKey(keyString);
+    }
+
+    private void setScript(String fileName) {
         scriptFileName = fileName;
         ScriptParser parser = new ScriptParser(scriptFileName);
         try {
@@ -186,6 +136,10 @@ public class Settings {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void setActiveScript(String fileName) {
+        activeSettings.setScript(fileName);
     }
 
     public static String[] getAvailableScriptFileNames() {
@@ -203,36 +157,48 @@ public class Settings {
         return fileNames.toArray(new String[0]);
     }
 
-    public static Script getScript() {
-        return script;
+    public static Script getActiveScript() {
+        return activeSettings.script;
     }
 
-    public static String getScriptFileName() {
+    public String getScriptFileName() {
         return scriptFileName;
     }
 
-    public static int getActivationControlKey() {
-        return activationControlKey;
+    public static String getActiveScriptFileName() {
+        return activeSettings.scriptFileName;
     }
 
-    public static int getActivationKey() {
-        return activationKey;
+    public static int getActiveActivationControlKey() {
+        return activeSettings.activationControlKey;
     }
 
-    public static String getActivationControlKeyString() {
+    public static int getActiveActivationKey() {
+        return activeSettings.activationKey;
+    }
+
+    public String getActivationControlKeyString() {
         return activationControlKeyString;
     }
 
-    public static String getActivationKeyString() {
+    public static String getActiveActivationControlKeyString() {
+        return activeSettings.activationControlKeyString;
+    }
+
+    public String getActivationKeyString() {
         return activationKeyString;
     }
 
-    public static Font getScriptFont() {
-        return scriptFont;
+    public static String getActiveActivationKeyString() {
+        return activeSettings.activationKeyString;
     }
 
-    public static Font getKeyFont() {
-        return keyFont;
+    public static Font getActiveScriptFont() {
+        return activeSettings.scriptFont;
+    }
+
+    public static Font getActiveKeyFont() {
+        return activeSettings.keyFont;
     }
 
 }

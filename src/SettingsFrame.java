@@ -1,11 +1,10 @@
-import sun.awt.WindowClosingListener;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -23,13 +22,16 @@ public class SettingsFrame extends JFrame implements WindowListener, ActionListe
     private SettingsFrame() {
         super("Settings");
 
+        /*
+        SCRIPT COMPONENTS:
+        */
         keysLabel = new JLabel("Shortcut:");
 
         controlKeyCombo = new JComboBox<>();
         ArrayList<String> controlKeyStrings = new ArrayList<>(Settings.CONTROL_KEY_MAP.keySet());
         Collections.sort(controlKeyStrings);
         controlKeyStrings.forEach((keyString) -> controlKeyCombo.addItem(keyString));
-        controlKeyCombo.setSelectedItem(Settings.getActivationControlKeyString());
+        controlKeyCombo.setSelectedItem(Settings.getActiveActivationControlKeyString());
         controlKeyCombo.addActionListener(this);
         //keysPanel.add(controlKeyCombo);
 
@@ -37,30 +39,39 @@ public class SettingsFrame extends JFrame implements WindowListener, ActionListe
         ArrayList<String> keyStrings = new ArrayList<>(Settings.KEY_MAP.keySet());
         Collections.sort(keyStrings);
         keyStrings.forEach((keyString) -> keyCombo.addItem(keyString));
-        keyCombo.setSelectedItem(Settings.getActivationKeyString());
+        keyCombo.setSelectedItem(Settings.getActiveActivationKeyString());
         keyCombo.addActionListener(this);
-        //keysPanel.add(keyCombo);
 
+        /*
+        SCRIPT COMPONENTS:
+        */
         scriptLabel = new JLabel("Script:");
 
         scriptCombo = new JComboBox<>(Settings.getAvailableScriptFileNames());
-        scriptCombo.setSelectedItem(Settings.getScriptFileName());
+        scriptCombo.setSelectedItem(Settings.getActiveScriptFileName());
 
         scriptHelpButton = new JButton("What's this?");
         scriptHelpButton.setMargin(new Insets(2, 2, 2, 2));
+        scriptHelpButton.addActionListener(this);
 
+        /*
+        DIALOG COMPONENTS:
+        */
         cancelButton = new JButton("Cancel");
         cancelButton.addActionListener(this);
 
         okButton = new JButton("OK");
         okButton.addActionListener(this);
 
+        /*
+        LAYOUT:
+        */
         GroupLayout layout = new GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
-
         layout.setAutoCreateGaps(true);
         layout.setAutoCreateContainerGaps(true);
 
+        // horizontal axis
         layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
@@ -84,6 +95,7 @@ public class SettingsFrame extends JFrame implements WindowListener, ActionListe
             )
         );
 
+        // vertical axis
         layout.setVerticalGroup(layout.createSequentialGroup()
             .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                 .addComponent(keysLabel)
@@ -107,7 +119,7 @@ public class SettingsFrame extends JFrame implements WindowListener, ActionListe
             )
         );
 
-        setSize(getPreferredSize());
+        setSize(getContentPane().getPreferredSize());
         setResizable(false);
         setLocationRelativeTo(null);
         addWindowListener(this);
@@ -134,13 +146,20 @@ public class SettingsFrame extends JFrame implements WindowListener, ActionListe
         if (source == cancelButton) {
             close();
         } else if (source == okButton) {
-            Settings.setActivationKeys((String) controlKeyCombo.getSelectedItem(), (String) keyCombo.getSelectedItem());
+            Settings.setActiveActivationControlKey((String) controlKeyCombo.getSelectedItem());
+            Settings.setActiveActivationKey((String) keyCombo.getSelectedItem());
             String scriptFileName = (String) scriptCombo.getSelectedItem();
-            if (!scriptFileName.equals(Settings.getScriptFileName())) {
-                Settings.setScript(scriptFileName);
+            if (!scriptFileName.equals(Settings.getActiveScriptFileName())) {
+                Settings.setActiveScript(scriptFileName);
             }
             Settings.save();
             close();
+        } else if (source == scriptHelpButton) {
+            try {
+                Runtime.getRuntime().exec("edit " + Settings.RES_PATH + scriptCombo.getSelectedItem());
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
         }
     }
 
@@ -149,6 +168,7 @@ public class SettingsFrame extends JFrame implements WindowListener, ActionListe
 
     @Override
     public void windowClosing(WindowEvent e) {
+        // native "x" button clicked
         close();
     }
 

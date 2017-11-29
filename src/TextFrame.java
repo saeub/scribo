@@ -28,16 +28,20 @@ public class TextFrame extends JFrame implements WindowFocusListener, KeyListene
         setUndecorated(true);
         setAlwaysOnTop(true);
         addWindowFocusListener(this);
+
+        // TODO prevent or handle text selection
         textField = new JTextField();
         textField.setEditable(false);
-        textField.getCaret().setVisible(true);
+        textField.getCaret().setVisible(true); // show caret even though textField is technically not editable
         textField.addKeyListener(this);
         textField.setHorizontalAlignment(JTextField.CENTER);
         textField.setMargin(new Insets(0, 5, 0, 5));
-        textField.setFont(Settings.getScriptFont());
+        textField.setFont(Settings.getActiveScriptFont());
+
         add(textField);
         resize();
-        //setVisible(true);
+
+        // add system tray icon and menu
         try {
             TrayIcon icon = new TrayIcon(ImageIO.read(new FileInputStream(Settings.RES_PATH + "trayicon.png")));
             icon.setImageAutoSize(true);
@@ -59,26 +63,39 @@ public class TextFrame extends JFrame implements WindowFocusListener, KeyListene
         setLocationRelativeTo(null);
     }
 
+    private void handleInput(Character inputCharacter) {
+        switch (inputCharacter) {
+            case KeyEvent.VK_ENTER:
+                break;
+            case KeyEvent.VK_ESCAPE:
+                break;
+            case KeyEvent.VK_BACK_SPACE:
+                removeCharacter(-1);
+                break;
+            case KeyEvent.VK_DELETE:
+                removeCharacter(0);
+                break;
+            default: // letter key is entered (probably...)
+                chooseCharacter(inputCharacter);
+                break;
+        }
+    }
+
     public void onSelection(String characterString, Character nextCharacter) {
         selecting = false;
         if (characterString != null) {
-            String text = addString(characterString, true, false);
-            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(
-                    new StringSelection(text), null);
+            addString(characterString, true, false);
         }
         if (nextCharacter != null) {
-            chooseCharacter(nextCharacter);
+            handleInput(nextCharacter);
         }
     }
 
-    private void moveCaret(int offset) {
-        int position = textField.getCaretPosition() + offset;
-        textField.setCaretPosition(position);
-    }
-
-    private String addString(String string, boolean replaceTemp, boolean newTemp) {
+    private void addString(String string, boolean replaceTemp, boolean newTemp) {
         StringBuilder text = new StringBuilder(textField.getText());
         int caret = textField.getCaretPosition();
+
+        // set or replace temporary string
         if (replaceTemp) {
             text.delete(tempStart, tempEnd);
             textField.setText(text.toString());
@@ -88,48 +105,59 @@ public class TextFrame extends JFrame implements WindowFocusListener, KeyListene
             tempStart = caret;
             tempEnd = caret + string.length();
         }
+
         text.insert(caret, string);
-        if (Settings.getScript().requiresNormalization() && replaceTemp) { // TODO optimize
+
+        // normalize if added String is not temporary
+        if (Settings.getActiveScript().requiresNormalization() && !newTemp) {
             String normalizedText = Normalizer.normalize(text.toString(), Normalizer.Form.NFC);
-            caret += string.length() + normalizedText.length() - text.length();
+            caret += string.length() + normalizedText.length() - text.length(); // adjust caret for normalization
             text = new StringBuilder(normalizedText);
         } else {
             caret += string.length();
         }
+
+        // update clipboard
+        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(
+                new StringSelection(text.toString()), this);
+
         textField.setText(text.toString());
         textField.setCaretPosition(caret);
         resize();
-        return text.toString();
     }
 
-    private String removeCharacter(int offset) {
+    private void removeCharacter(int offset) {
         StringBuilder text = new StringBuilder(textField.getText());
+
         int index = textField.getCaretPosition() + offset;
         if (index >= 0 && index < text.length()) {
             text.deleteCharAt(index);
             textField.setText(text.toString());
             textField.setCaretPosition(index);
             resize();
+
+            // update clipboard
             Toolkit.getDefaultToolkit().getSystemClipboard().setContents(
-                    new StringSelection(text.toString()), null);
+                    new StringSelection(text.toString()), this);
         }
-        return text.toString();
     }
 
     public void chooseCharacter(char classKey) {
         selecting = true;
-        addString(Settings.getScript().getKeyString(classKey), false, true);
+        addString(Settings.getActiveScript().getKeyString(classKey), false, true);
         new SelectionDialog(this, classKey);
     }
 
     @Override
     public void windowGainedFocus(WindowEvent e) {
+        // show caret, even though textField is technically not editable
         textField.getCaret().setVisible(true);
     }
 
     @Override
     public void windowLostFocus(WindowEvent e) {
-        if (!selecting) {
+        // hide window if user clicks away
+        if (!selecting) { // necessary, since TextFrame automatically loses focus when SelectionDialog is opened
             setVisible(false);
         }
     }
@@ -138,17 +166,7 @@ public class TextFrame extends JFrame implements WindowFocusListener, KeyListene
     public void keyTyped(KeyEvent e) {
         if (!selecting) {
             char keyChar = e.getKeyChar();
-            if (keyChar == KeyEvent.VK_LEFT) {
-                moveCaret(-1);
-            } else if (keyChar == KeyEvent.VK_RIGHT) {
-                moveCaret(1);
-            } else if (keyChar == KeyEvent.VK_BACK_SPACE) {
-                removeCharacter(-1);
-            } else if (keyChar == KeyEvent.VK_DELETE) {
-                removeCharacter(0);
-            } else {
-                chooseCharacter(keyChar);
-            }
+            handleInput(keyChar);
         }
     }
 
@@ -170,10 +188,12 @@ public class TextFrame extends JFrame implements WindowFocusListener, KeyListene
     @Override
     public void nativeKeyPressed(NativeKeyEvent nativeKeyEvent) {
         int keyCode = nativeKeyEvent.getKeyCode();
+
+        // show/hide frame
         if (!isVisible()) {
-            if (keyCode == Settings.getActivationControlKey()) {
+            if (keyCode == Settings.getActiveActivationControlKey()) {
                 activationControlKeyPressed = true;
-            } else if (keyCode == Settings.getActivationKey() && activationControlKeyPressed) {
+            } else if (keyCode == Settings.getActiveActivationKey() && activationControlKeyPressed) {
                 setVisible(true);
             }
         } else {
@@ -189,7 +209,7 @@ public class TextFrame extends JFrame implements WindowFocusListener, KeyListene
     @Override
     public void nativeKeyReleased(NativeKeyEvent nativeKeyEvent) {
         int keyCode = nativeKeyEvent.getKeyCode();
-        if (keyCode == Settings.getActivationControlKey()) {
+        if (keyCode == Settings.getActiveActivationControlKey()) {
             activationControlKeyPressed = false;
         }
     }
