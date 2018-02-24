@@ -33,7 +33,6 @@ public class SettingsFrame extends JFrame implements WindowListener, ActionListe
         controlKeyStrings.forEach((keyString) -> controlKeyCombo.addItem(keyString));
         controlKeyCombo.setSelectedItem(Settings.getActiveActivationControlKeyString());
         controlKeyCombo.addActionListener(this);
-        //keysPanel.add(controlKeyCombo);
 
         keyCombo = new JComboBox<>();
         ArrayList<String> keyStrings = new ArrayList<>(Settings.KEY_MAP.keySet());
@@ -119,7 +118,7 @@ public class SettingsFrame extends JFrame implements WindowListener, ActionListe
             )
         );
 
-        setSize(getContentPane().getPreferredSize());
+        pack();
         setResizable(false);
         setLocationRelativeTo(null);
         addWindowListener(this);

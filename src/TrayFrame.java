@@ -12,9 +12,10 @@ public class TrayFrame extends JFrame implements WindowListener, ActionListener 
         super("scribo");
 
         settingsButton = new JButton("Settings");
+        settingsButton.addActionListener(this);
         add(settingsButton);
 
-        setSize(100, 80);
+        pack();
         setResizable(false);
         addWindowListener(this);
         setVisible(true);
@@ -44,6 +45,10 @@ public class TrayFrame extends JFrame implements WindowListener, ActionListener 
     public void windowDeactivated(WindowEvent e) { }
 
     @Override
-    public void actionPerformed(ActionEvent e) { }
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == settingsButton) {
+            SettingsFrame.open();
+        }
+    }
 
 }
