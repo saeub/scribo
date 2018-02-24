@@ -1,4 +1,4 @@
-# scribo _(alpha)_
+## about
 
 ![Screenshot](images/scr_example.png)
 
@@ -14,7 +14,7 @@ _scribo_ is currently in alpha (2018-02-24).
 
 ## download and install
 
-[DOWNLOAD](download/20180224_scribo.zip)
+[__DOWNLOAD__](download/20180224_scribo.zip)
 
 __NOTE:__ _scribo_ is still in early alpha stage. If you run into problems, please [create an issue](https://github.com/phigames/scribo/issues) or contact me: ![](images/contact.png)
 
