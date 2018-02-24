@@ -5,6 +5,9 @@ import java.awt.event.KeyListener;
 
 public class SelectionDialog extends JDialog implements KeyListener {
 
+    private static final int WIDTH_PER_CHAR = 30;
+    private static final int HEIGHT = 50;
+
     private TextFrame parent;
     private CharacterClass characterClass;
 
@@ -17,16 +20,16 @@ public class SelectionDialog extends JDialog implements KeyListener {
         } else {
             Character[] keyCharacters = characterClass.getKeyCharacters();
             setLayout(new GridLayout(2, keyCharacters.length));
-            for (int i = 0; i < keyCharacters.length; i++) {
-                String characterString = characterClass.getCharacterString(keyCharacters[i]);
+            for (Character keyCharacter : keyCharacters) {
+                String characterString = characterClass.getCharacterString(keyCharacter);
                 SelectionCharacterLabel characterLabel = new SelectionCharacterLabel(characterString);
                 add(characterLabel);
             }
-            for (int i = 0; i < keyCharacters.length; i++) {
-                SelectionKeyLabel keyLabel = new SelectionKeyLabel(keyCharacters[i]);
+            for (Character keyCharacter : keyCharacters) {
+                SelectionKeyLabel keyLabel = new SelectionKeyLabel(keyCharacter);
                 add(keyLabel);
             }
-            setSize(keyCharacters.length * 30, 50);
+            setSize(keyCharacters.length * WIDTH_PER_CHAR, HEIGHT);
             setLocation(parent.getLocation().x + parent.getWidth() / 2 - getWidth() / 2,
                     parent.getLocation().y - getHeight());
             addKeyListener(this);
@@ -53,7 +56,7 @@ public class SelectionDialog extends JDialog implements KeyListener {
 
     }
 
-    private class SelectionCharacterLabel extends JLabel {
+    private static class SelectionCharacterLabel extends JLabel {
 
         private SelectionCharacterLabel(String characterString) {
             super();
@@ -64,13 +67,15 @@ public class SelectionDialog extends JDialog implements KeyListener {
 
     }
 
-    private class SelectionKeyLabel extends JLabel {
+    private static class SelectionKeyLabel extends JLabel {
+
+        private static final Color TEXT_COLOR = new Color(0x666666);
 
         private SelectionKeyLabel(char keyCharacter) {
             super();
             setText(Character.toString(keyCharacter));
             setFont(Settings.getActiveKeyFont());
-            setForeground(new Color(0x666666));
+            setForeground(TEXT_COLOR);
             setHorizontalAlignment(JLabel.CENTER);
         }
 

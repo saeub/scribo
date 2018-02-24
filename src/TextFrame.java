@@ -29,9 +29,9 @@ public class TextFrame extends JFrame implements WindowFocusListener, KeyListene
         setAlwaysOnTop(true);
         addWindowFocusListener(this);
 
-        // TODO prevent or handle text selection
         textField = new JTextField();
         textField.setEditable(false);
+        textField.setHighlighter(null);
         textField.getCaret().setVisible(true); // show caret even though textField is technically not editable
         textField.addKeyListener(this);
         textField.setHorizontalAlignment(JTextField.CENTER);
@@ -52,6 +52,8 @@ public class TextFrame extends JFrame implements WindowFocusListener, KeyListene
             menu.add(quitItem);
             icon.setPopupMenu(menu);
             SystemTray.getSystemTray().add(icon);
+        } catch (UnsupportedOperationException e) { // OS doesn't support tray icon
+            new TrayFrame();
         } catch (IOException | AWTException e) {
             e.printStackTrace();
         }
