@@ -18,6 +18,7 @@ import java.text.Normalizer;
 
 public class TextFrame extends JFrame implements WindowFocusListener, KeyListener, NativeKeyListener, ClipboardOwner {
 
+    private TrayFrame trayFrame;
     private JTextField textField;
     private boolean selecting;
     private boolean activationControlKeyPressed;
@@ -53,7 +54,7 @@ public class TextFrame extends JFrame implements WindowFocusListener, KeyListene
             icon.setPopupMenu(menu);
             SystemTray.getSystemTray().add(icon);
         } catch (UnsupportedOperationException e) { // OS doesn't support tray icon
-            new TrayFrame();
+            trayFrame = new TrayFrame();
         } catch (IOException | AWTException e) {
             e.printStackTrace();
         }
@@ -197,6 +198,9 @@ public class TextFrame extends JFrame implements WindowFocusListener, KeyListene
                 activationControlKeyPressed = true;
             } else if (keyCode == Settings.getActiveActivationKey() && activationControlKeyPressed) {
                 setVisible(true);
+                if (trayFrame != null) {
+                    trayFrame.setState(JFrame.ICONIFIED);
+                }
             }
         } else {
             if (!selecting && (keyCode == NativeKeyEvent.VC_ENTER || keyCode == NativeKeyEvent.VC_ESCAPE)) {
