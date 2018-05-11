@@ -10,11 +10,11 @@ _scribo_ is a tool to help you __type strange Unicode characters without leaving
 * define shortcuts for certain special characters you use frequently
 * make a weird keyboard layout where none of the letters are where they're supposed to be (heaps of fun!)
 
-_scribo_ is currently in alpha (2018-02-24).
+_scribo_ is currently in alpha (2018-05-11).
 
 ## download and install
 
-[__DOWNLOAD__](download/20180224_scribo.zip)
+[__DOWNLOAD__](download/20180511_scribo.zip)
 
 __NOTE:__ _scribo_ is still in early alpha stage. If you run into problems, please [create an issue](https://github.com/phigames/scribo/issues) or contact me: ![](images/contact.png)
 
