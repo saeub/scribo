@@ -12,37 +12,13 @@ import java.util.HashMap;
 
 public class Settings {
 
-    public static final HashMap<String, Integer> CONTROL_KEY_MAP;
     public static final HashMap<String, Integer> KEY_MAP;
     static {
-        CONTROL_KEY_MAP = new HashMap<>();
-        CONTROL_KEY_MAP.put("Ctrl", NativeKeyEvent.VC_CONTROL);
-        CONTROL_KEY_MAP.put("Alt", NativeKeyEvent.VC_ALT);
-        CONTROL_KEY_MAP.put("Shift", NativeKeyEvent.VC_SHIFT);
-
         KEY_MAP = new HashMap<>();
-        KEY_MAP.put("1", NativeKeyEvent.VC_1);
-        KEY_MAP.put("2", NativeKeyEvent.VC_2);
-        KEY_MAP.put("3", NativeKeyEvent.VC_3);
-        KEY_MAP.put("4", NativeKeyEvent.VC_4);
-        KEY_MAP.put("5", NativeKeyEvent.VC_5);
-        KEY_MAP.put("6", NativeKeyEvent.VC_6);
-        KEY_MAP.put("7", NativeKeyEvent.VC_7);
-        KEY_MAP.put("8", NativeKeyEvent.VC_8);
-        KEY_MAP.put("9", NativeKeyEvent.VC_9);
-        KEY_MAP.put("0", NativeKeyEvent.VC_0);
-        KEY_MAP.put("F1", NativeKeyEvent.VC_F1);
-        KEY_MAP.put("F2", NativeKeyEvent.VC_F2);
-        KEY_MAP.put("F3", NativeKeyEvent.VC_F3);
-        KEY_MAP.put("F4", NativeKeyEvent.VC_F4);
-        KEY_MAP.put("F5", NativeKeyEvent.VC_F5);
-        KEY_MAP.put("F6", NativeKeyEvent.VC_F6);
-        KEY_MAP.put("F7", NativeKeyEvent.VC_F7);
-        KEY_MAP.put("F8", NativeKeyEvent.VC_F8);
-        KEY_MAP.put("F9", NativeKeyEvent.VC_F9);
-        KEY_MAP.put("F10", NativeKeyEvent.VC_F10);
-        KEY_MAP.put("F11", NativeKeyEvent.VC_F11);
-        KEY_MAP.put("F12", NativeKeyEvent.VC_F12);
+        KEY_MAP.put("Ctrl", NativeKeyEvent.VC_CONTROL);
+        KEY_MAP.put("Alt", NativeKeyEvent.VC_ALT);
+        KEY_MAP.put("Shift", NativeKeyEvent.VC_SHIFT);
+        KEY_MAP.put("Meta", NativeKeyEvent.VC_META);
     }
 
     public static final String RES_PATH;
@@ -70,16 +46,15 @@ public class Settings {
 
     private String scriptFileName;
     private Script script;
-    private String activationControlKeyString;
-    private int activationControlKey;
     private String activationKeyString;
     private int activationKey;
+    private int activationKeyPresses;
     private Font scriptFont, keyFont;
 
-    public Settings(String scriptFileName, String activationControlKeyString, String activationKeyString) {
+    public Settings(String scriptFileName, String activationKeyString, int activationKeyPresses) {
         setScript(scriptFileName);
-        setActivationControlKey(activationControlKeyString);
         setActivationKey(activationKeyString);
+        setActivationKeyPresses(activationKeyPresses);
         try {
             GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(Font.createFont(Font.TRUETYPE_FONT,
                     new File(RES_PATH + "GentiumPlus-R.ttf")));
@@ -110,15 +85,6 @@ public class Settings {
         }
     }
 
-    private void setActivationControlKey(String keyString) {
-        activationControlKeyString = keyString;
-        activationControlKey = CONTROL_KEY_MAP.get(keyString);
-    }
-
-    public static void setActiveActivationControlKey(String keyString) {
-        activeSettings.setActivationControlKey(keyString);
-    }
-
     private void setActivationKey(String keyString) {
         activationKeyString = keyString;
         activationKey = KEY_MAP.get(keyString);
@@ -126,6 +92,14 @@ public class Settings {
 
     public static void setActiveActivationKey(String keyString) {
         activeSettings.setActivationKey(keyString);
+    }
+
+    private void setActivationKeyPresses(int keyPresses) {
+        activationKeyPresses = keyPresses;
+    }
+
+    public static void setActiveActivationKeyPresses(int keyPresses) {
+        activeSettings.setActivationKeyPresses(keyPresses);
     }
 
     private void setScript(String fileName) {
@@ -169,20 +143,8 @@ public class Settings {
         return activeSettings.scriptFileName;
     }
 
-    public static int getActiveActivationControlKey() {
-        return activeSettings.activationControlKey;
-    }
-
     public static int getActiveActivationKey() {
         return activeSettings.activationKey;
-    }
-
-    public String getActivationControlKeyString() {
-        return activationControlKeyString;
-    }
-
-    public static String getActiveActivationControlKeyString() {
-        return activeSettings.activationControlKeyString;
     }
 
     public String getActivationKeyString() {
@@ -191,6 +153,14 @@ public class Settings {
 
     public static String getActiveActivationKeyString() {
         return activeSettings.activationKeyString;
+    }
+
+    public int getActivationKeyPresses() {
+        return activationKeyPresses;
+    }
+
+    public static int getActiveActivationKeyPresses() {
+        return activeSettings.activationKeyPresses;
     }
 
     public static Font getActiveScriptFont() {

@@ -97,7 +97,7 @@ u + o = ʊ	# lax close back rounded
 v +   = ʋ	# vd labiodental approximant
 v +   = ⱱ	# voiced labiodental flap
 
-  +   = ʌ	# open-mid back unrounded
+a + u = ʌ	# open-mid back unrounded
 
 g + x = ɣ	# vd velar fricative
   +   = ɤ	# close-mid back unrounded
@@ -131,8 +131,8 @@ t + ' = t’  # dental/alveolar ejective
 k + ' = k’  # velar ejective
 s + ' = s’  # alveolar ejective fricative
 
-################
-# indo-european:
+###############
+# indo-european
 
 p + H = pʰ
 b + H = bʰ
@@ -161,11 +161,16 @@ h + 3 = h₃
 u + U = u̯
 i + U = i̯
 
-#############
-# diacritics:
+############
+# diacritics
 
 . + ^ = ̑   # palatalized
 . + - = ̄   # macron
+
+: = ː       # long
+
+' = ˈ		# primary stress
+' + ' = ˌ	# secondary stress
 
 . + ' = ’  # ejective
 
@@ -174,8 +179,8 @@ i + U = i̯
 . + H = ʰ  # aspirated
 . + ) = ̹   # more rounded
 . + ( = ̜   # less rounded
-. +   = ̟   # advanced
-. +   = ̱   # retracted
+. + < = ̟   # advanced
+. + > = ̱   # retracted
 . +   = ̈   # centralized
 . +   = ̽   # mid-centralized
 . + . = ̣   # syllabic

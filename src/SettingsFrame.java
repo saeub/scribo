@@ -13,7 +13,8 @@ public class SettingsFrame extends JFrame implements WindowListener, ActionListe
     private static SettingsFrame singleInstance;
 
     private JLabel keysLabel;
-    private JComboBox<String> controlKeyCombo, keyCombo;
+    private JComboBox<String> keyCombo;
+    private JSpinner keyPressesSpinner;
     private JLabel scriptLabel;
     private JComboBox<String> scriptCombo;
     private JButton scriptHelpButton;
@@ -23,16 +24,9 @@ public class SettingsFrame extends JFrame implements WindowListener, ActionListe
         super("Settings");
 
         /*
-        SCRIPT COMPONENTS:
+        KEY COMPONENTS:
         */
         keysLabel = new JLabel("Shortcut:");
-
-        controlKeyCombo = new JComboBox<>();
-        ArrayList<String> controlKeyStrings = new ArrayList<>(Settings.CONTROL_KEY_MAP.keySet());
-        Collections.sort(controlKeyStrings);
-        controlKeyStrings.forEach((keyString) -> controlKeyCombo.addItem(keyString));
-        controlKeyCombo.setSelectedItem(Settings.getActiveActivationControlKeyString());
-        controlKeyCombo.addActionListener(this);
 
         keyCombo = new JComboBox<>();
         ArrayList<String> keyStrings = new ArrayList<>(Settings.KEY_MAP.keySet());
@@ -40,6 +34,10 @@ public class SettingsFrame extends JFrame implements WindowListener, ActionListe
         keyStrings.forEach((keyString) -> keyCombo.addItem(keyString));
         keyCombo.setSelectedItem(Settings.getActiveActivationKeyString());
         keyCombo.addActionListener(this);
+
+        keyPressesSpinner = new JSpinner(
+            new SpinnerNumberModel(Settings.getActiveActivationKeyPresses(), 1, 10, 1)
+        );
 
         /*
         SCRIPT COMPONENTS:
@@ -79,8 +77,8 @@ public class SettingsFrame extends JFrame implements WindowListener, ActionListe
                 )
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(controlKeyCombo)
                         .addComponent(keyCombo)
+                        .addComponent(keyPressesSpinner)
                     )
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(scriptCombo)
@@ -99,8 +97,8 @@ public class SettingsFrame extends JFrame implements WindowListener, ActionListe
             .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                 .addComponent(keysLabel)
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                    .addComponent(controlKeyCombo)
                     .addComponent(keyCombo)
+                    .addComponent(keyPressesSpinner)
                 )
             )
             .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
@@ -145,8 +143,8 @@ public class SettingsFrame extends JFrame implements WindowListener, ActionListe
         if (source == cancelButton) {
             close();
         } else if (source == okButton) {
-            Settings.setActiveActivationControlKey((String) controlKeyCombo.getSelectedItem());
             Settings.setActiveActivationKey((String) keyCombo.getSelectedItem());
+            Settings.setActiveActivationKeyPresses((int) keyPressesSpinner.getValue());
             String scriptFileName = (String) scriptCombo.getSelectedItem();
             if (!scriptFileName.equals(Settings.getActiveScriptFileName())) {
                 Settings.setActiveScript(scriptFileName);

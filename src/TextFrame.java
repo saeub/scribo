@@ -18,17 +18,23 @@ import java.text.Normalizer;
 
 public class TextFrame extends JFrame implements WindowFocusListener, KeyListener, NativeKeyListener, ClipboardOwner {
 
+    private Rectangle screenBounds;
     private TrayFrame trayFrame;
     private JTextField textField;
     private boolean selecting;
-    private boolean activationControlKeyPressed;
+    private long activationKeyTime;
+    private long activationKeyPresses;
+
     private int tempStart, tempEnd;
 
     public TextFrame() {
         super();
         setUndecorated(true);
+        setResizable(false);
         setAlwaysOnTop(true);
         addWindowFocusListener(this);
+
+        screenBounds = MouseInfo.getPointerInfo().getDevice().getDefaultConfiguration().getBounds();
 
         textField = new JTextField();
         textField.setEditable(false);
@@ -38,6 +44,8 @@ public class TextFrame extends JFrame implements WindowFocusListener, KeyListene
         textField.setHorizontalAlignment(JTextField.CENTER);
         textField.setMargin(new Insets(0, 5, 0, 5));
         textField.setFont(Settings.getActiveScriptFont());
+
+        activationKeyTime = -1;
 
         add(textField);
         resize();
@@ -63,7 +71,10 @@ public class TextFrame extends JFrame implements WindowFocusListener, KeyListene
     private void resize() {
         int stringWidth = textField.getFontMetrics(textField.getFont()).stringWidth(textField.getText());
         setSize(stringWidth + 20, 30);
-        setLocationRelativeTo(null);
+        setLocation(
+            (int) Math.round(screenBounds.getCenterX() - getWidth() / 2),
+            (int) Math.round(screenBounds.getCenterY() - getHeight() / 2)
+        );
     }
 
     private void handleInput(Character inputCharacter) {
@@ -194,13 +205,27 @@ public class TextFrame extends JFrame implements WindowFocusListener, KeyListene
 
         // show/hide frame
         if (!isVisible()) {
-            if (keyCode == Settings.getActiveActivationControlKey()) {
-                activationControlKeyPressed = true;
-            } else if (keyCode == Settings.getActiveActivationKey() && activationControlKeyPressed) {
-                setVisible(true);
-                if (trayFrame != null) {
-                    trayFrame.setState(JFrame.ICONIFIED);
+            if (keyCode == Settings.getActiveActivationKey()) {
+                long currentTime = System.nanoTime();
+                if (currentTime - activationKeyTime > 500000000) {
+                    activationKeyPresses = 0;
                 }
+                activationKeyTime = currentTime;
+                activationKeyPresses++;
+                if (activationKeyPresses >= Settings.getActiveActivationKeyPresses()) {
+                    // center on screen
+                    screenBounds = MouseInfo.getPointerInfo().getDevice().getDefaultConfiguration().getBounds();
+                    resize();
+                    setVisible(true);
+
+                    // iconify tray frame so it won't steal focus
+                    if (trayFrame != null) {
+                        trayFrame.setState(TrayFrame.ICONIFIED);
+                    }
+                    activationKeyPresses = 0;
+                }
+            } else {
+                activationKeyPresses = 0;
             }
         } else {
             if (!selecting && (keyCode == NativeKeyEvent.VC_ENTER || keyCode == NativeKeyEvent.VC_ESCAPE)) {
@@ -214,10 +239,7 @@ public class TextFrame extends JFrame implements WindowFocusListener, KeyListene
 
     @Override
     public void nativeKeyReleased(NativeKeyEvent nativeKeyEvent) {
-        int keyCode = nativeKeyEvent.getKeyCode();
-        if (keyCode == Settings.getActiveActivationControlKey()) {
-            activationControlKeyPressed = false;
-        }
+
     }
 
     @Override

@@ -3,8 +3,8 @@ import java.io.*;
 public class SettingsParser {
 
     private static final String SCRIPT_KEY = "script";
-    private static final String ACTIVATION_CONTROL_KEY_KEY = "activationControlKey";
     private static final String ACTIVATION_KEY_KEY = "activationKey";
+    private static final String ACTIVATION_KEY_PRESSES_KEY = "activationKeyPresses";
 
     private static final int KEY = 0;
     private static final int VALUE = 1;
@@ -18,7 +18,8 @@ public class SettingsParser {
     }
 
     public Settings parse() throws IOException {
-        String scriptFileName = null, activationControlKeyString = null, activationKeyString = null;
+        String scriptFileName = null, activationKeyString = null;
+        int activationKeyPresses = -1;
         resetVariables();
         InputStreamReader reader = new InputStreamReader(new FileInputStream(fileName), "UTF-8");
         while (true) {
@@ -30,10 +31,10 @@ public class SettingsParser {
                     String valueString = valueStringBuilder.toString();
                     if (keyString.equals(SCRIPT_KEY)) { // script parsed
                         scriptFileName = valueString;
-                    } else if (keyString.equals(ACTIVATION_CONTROL_KEY_KEY)) { // activation control key parsed
-                        activationControlKeyString = valueString;
-                    } else if (keyString.equals(ACTIVATION_KEY_KEY)) { // activation control key parsed
+                    } else if (keyString.equals(ACTIVATION_KEY_KEY)) { // activation key parsed
                         activationKeyString = valueString;
+                    } else if (keyString.equals(ACTIVATION_KEY_PRESSES_KEY)) { // activation key presses parsed
+                        activationKeyPresses = Integer.parseInt(valueString);
                     } else {
                         System.out.println("(SettingsParser) WARNING: unknown key '" + keyString + "'");
                     }
@@ -49,7 +50,7 @@ public class SettingsParser {
             }
         }
         reader.close();
-        return new Settings(scriptFileName, activationControlKeyString, activationKeyString);
+        return new Settings(scriptFileName, activationKeyString, activationKeyPresses);
     }
 
     private void resetVariables() {
@@ -86,9 +87,9 @@ public class SettingsParser {
     public void save(Settings settings) throws IOException {
         OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(fileName));
         writer.write(
-            SCRIPT_KEY              + " = " + settings.getScriptFileName() + "\n" +
-            ACTIVATION_CONTROL_KEY_KEY  + " = " + settings.getActivationControlKeyString() + "\n" +
-            ACTIVATION_KEY_KEY          + " = " + settings.getActivationKeyString()
+            SCRIPT_KEY             + " = " + settings.getScriptFileName() + "\n" +
+            ACTIVATION_KEY_KEY         + " = " + settings.getActivationKeyString() + "\n" +
+            ACTIVATION_KEY_PRESSES_KEY + " = " + settings.getActivationKeyPresses()
         );
         writer.close();
     }
