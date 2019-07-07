@@ -1,9 +1,11 @@
 import javax.swing.*;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -15,6 +17,7 @@ public class SettingsFrame extends JFrame implements WindowListener, ActionListe
     private JLabel keysLabel;
     private JComboBox<String> keyCombo;
     private JSpinner keyPressesSpinner;
+    private JLabel keyPressesLabel;
     private JLabel scriptLabel;
     private JComboBox<String> scriptCombo;
     private JButton scriptHelpButton;
@@ -26,7 +29,7 @@ public class SettingsFrame extends JFrame implements WindowListener, ActionListe
         /*
         KEY COMPONENTS:
         */
-        keysLabel = new JLabel("Shortcut:");
+        keysLabel = new JLabel("To activate, press");
 
         keyCombo = new JComboBox<>();
         ArrayList<String> keyStrings = new ArrayList<>(Settings.KEY_MAP.keySet());
@@ -38,6 +41,9 @@ public class SettingsFrame extends JFrame implements WindowListener, ActionListe
         keyPressesSpinner = new JSpinner(
             new SpinnerNumberModel(Settings.getActiveActivationKeyPresses(), 1, 10, 1)
         );
+        ((JSpinner.DefaultEditor) keyPressesSpinner.getEditor()).getTextField().setColumns(2);
+
+        keyPressesLabel = new JLabel("times");
 
         /*
         SCRIPT COMPONENTS:
@@ -77,8 +83,9 @@ public class SettingsFrame extends JFrame implements WindowListener, ActionListe
                 )
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(keyCombo)
-                        .addComponent(keyPressesSpinner)
+                        .addComponent(keyCombo, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                        .addComponent(keyPressesSpinner, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                        .addComponent(keyPressesLabel)
                     )
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(scriptCombo)
@@ -99,6 +106,7 @@ public class SettingsFrame extends JFrame implements WindowListener, ActionListe
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                     .addComponent(keyCombo)
                     .addComponent(keyPressesSpinner)
+                    .addComponent(keyPressesLabel)
                 )
             )
             .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
@@ -124,6 +132,7 @@ public class SettingsFrame extends JFrame implements WindowListener, ActionListe
     }
 
     public static void open() {
+        // TODO reopen singleInstance
         if (singleInstance != null) {
             close();
         }
@@ -152,8 +161,16 @@ public class SettingsFrame extends JFrame implements WindowListener, ActionListe
             Settings.save();
             close();
         } else if (source == scriptHelpButton) {
-            try {
+            /*try {
                 Runtime.getRuntime().exec("edit " + Settings.RES_PATH + scriptCombo.getSelectedItem());
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }*/
+            // TODO check if file exists and desktop supported
+            File scriptFile = new File(Settings.RES_PATH + scriptCombo.getSelectedItem());
+            Desktop desktop = Desktop.getDesktop();
+            try {
+                desktop.open(scriptFile);
             } catch (IOException e1) {
                 e1.printStackTrace();
             }

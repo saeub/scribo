@@ -55,10 +55,15 @@ public class TextFrame extends JFrame implements WindowFocusListener, KeyListene
             TrayIcon icon = new TrayIcon(ImageIO.read(new FileInputStream(Settings.RES_PATH + "trayicon.png")));
             icon.setImageAutoSize(true);
             icon.addActionListener(e -> SettingsFrame.open());
+
             PopupMenu menu = new PopupMenu();
+            MenuItem settingsItem = new MenuItem("Settings...");
+            settingsItem.addActionListener(e -> SettingsFrame.open());
+            menu.add(settingsItem);
             MenuItem quitItem = new MenuItem("Quit");
             quitItem.addActionListener(e -> Main.exit());
             menu.add(quitItem);
+
             icon.setPopupMenu(menu);
             SystemTray.getSystemTray().add(icon);
         } catch (UnsupportedOperationException e) { // OS doesn't support tray icon
@@ -132,8 +137,8 @@ public class TextFrame extends JFrame implements WindowFocusListener, KeyListene
         }
 
         // update clipboard
-        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(
-                new StringSelection(text.toString()), this);
+//        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(
+//                new StringSelection(text.toString()), this);
 
         textField.setText(text.toString());
         textField.setCaretPosition(caret);
@@ -151,8 +156,8 @@ public class TextFrame extends JFrame implements WindowFocusListener, KeyListene
             resize();
 
             // update clipboard
-            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(
-                    new StringSelection(text.toString()), this);
+//            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(
+//                    new StringSelection(text.toString()), this);
         }
     }
 
@@ -227,11 +232,18 @@ public class TextFrame extends JFrame implements WindowFocusListener, KeyListene
             } else {
                 activationKeyPresses = 0;
             }
-        } else {
-            if (!selecting && (keyCode == NativeKeyEvent.VC_ENTER || keyCode == NativeKeyEvent.VC_ESCAPE)) {
+        } else if (!selecting) {
+            if (keyCode == NativeKeyEvent.VC_ENTER) {
+                setVisible(false);
+                Toolkit.getDefaultToolkit().getSystemClipboard().setContents(
+                        new StringSelection(textField.getText()), this);
                 textField.setText(null);
                 textField.invalidate();
+                resize();
+            } else if (keyCode == NativeKeyEvent.VC_ESCAPE) {
                 setVisible(false);
+                textField.setText(null);
+                textField.invalidate();
                 resize();
             }
         }
